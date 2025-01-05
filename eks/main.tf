@@ -1,6 +1,6 @@
 locals {
   project = "Project-2-Three-Tier-DevSecOps-Pipeline"
-  env = var.env
+  env     = var.env
 }
 
 module "eks" {
