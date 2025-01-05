@@ -12,7 +12,7 @@ data "aws_ami" "ami" {
 data "aws_vpc" "eks-project-2-vpc" {
   filter {
     name   = "tag:Name"
-    values = ["eks-project-2-vpc"]
+    values = ["dev-Project-2-Three-Tier-DevSecOps-Pipeline-vpc"]
   }
 }
 
