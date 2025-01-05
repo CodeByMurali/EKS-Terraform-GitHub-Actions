@@ -12,31 +12,31 @@ properties([
 pipeline {
     agent any
     stages {
-        stage('Preparing') {
+        stage('Prepare') {
             steps {
                 sh 'echo Preparing'
             }
         }
-        stage('Git Pulling') {
+        stage('Git Clone') {
             steps {
-                git branch: 'master', url: 'https://github.com/AmanPathak-DevOps/EKS-Terraform-GitHub-Actions.git'
+                git branch: 'master', url: 'https://github.com/CodeByMurali/EKS-Terraform-GitHub-Actions.git'
             }
         }
-        stage('Init') {
+        stage('Terraform init') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                 sh 'terraform -chdir=eks/ init'
                 }
             }
         }
-        stage('Validate') {
+        stage('Terraform validate') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                 sh 'terraform -chdir=eks/ validate'
                 }
             }
         }
-        stage('Action') {
+        stage('Terraform action') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                     script {    

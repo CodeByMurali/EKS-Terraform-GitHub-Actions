@@ -1,5 +1,5 @@
 locals {
-  org = "medium"
+  project = "Project-2-Three-Tier-DevSecOps-Pipeline"
   env = var.env
 }
 
@@ -7,22 +7,22 @@ module "eks" {
   source = "../module"
 
   env                   = var.env
-  cluster-name          = "${local.env}-${local.org}-${var.cluster-name}"
+  cluster-name          = "${local.env}-${local.project}-${var.cluster-name}"
   cidr-block            = var.vpc-cidr-block
-  vpc-name              = "${local.env}-${local.org}-${var.vpc-name}"
-  igw-name              = "${local.env}-${local.org}-${var.igw-name}"
+  vpc-name              = "${local.env}-${local.project}-${var.vpc-name}"
+  igw-name              = "${local.env}-${local.project}-${var.igw-name}"
   pub-subnet-count      = var.pub-subnet-count
   pub-cidr-block        = var.pub-cidr-block
   pub-availability-zone = var.pub-availability-zone
-  pub-sub-name          = "${local.env}-${local.org}-${var.pub-sub-name}"
+  pub-sub-name          = "${local.env}-${local.project}-${var.pub-sub-name}"
   pri-subnet-count      = var.pri-subnet-count
   pri-cidr-block        = var.pri-cidr-block
   pri-availability-zone = var.pri-availability-zone
-  pri-sub-name          = "${local.env}-${local.org}-${var.pri-sub-name}"
-  public-rt-name        = "${local.env}-${local.org}-${var.public-rt-name}"
-  private-rt-name       = "${local.env}-${local.org}-${var.private-rt-name}"
-  eip-name              = "${local.env}-${local.org}-${var.eip-name}"
-  ngw-name              = "${local.env}-${local.org}-${var.ngw-name}"
+  pri-sub-name          = "${local.env}-${local.project}-${var.pri-sub-name}"
+  public-rt-name        = "${local.env}-${local.project}-${var.public-rt-name}"
+  private-rt-name       = "${local.env}-${local.project}-${var.private-rt-name}"
+  eip-name              = "${local.env}-${local.project}-${var.eip-name}"
+  ngw-name              = "${local.env}-${local.project}-${var.ngw-name}"
   eks-sg                = var.eks-sg
 
   is_eks_role_enabled           = true

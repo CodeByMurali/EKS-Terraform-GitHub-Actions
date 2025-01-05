@@ -1,16 +1,16 @@
 terraform {
-  required_version = "~> 1.9.3"
+  required_version = ">=1.10.3"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.49.0"
+      source = "hashicorp/aws"
+      version = "5.82.2"
     }
   }
   backend "s3" {
-    bucket         = "my-ews-baket1122"
-    region         = "us-east-2"
-    key            = "eks/terraform.tfstate"
-    dynamodb_table = "Lock-Files"
+    bucket         = "use1-remote-terraform-state-file-bucket"
+    region         = "us-east-1"
+    key            = "Project-2-Three-Tier-DevSecOps-Pipeline-Lock-Files/EKS/terraform.tfstate"
+    dynamodb_table = "Project-2-Three-Tier-DevSecOps-Pipeline-Lock-Files-EKS"
     encrypt        = true
   }
 }
