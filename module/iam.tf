@@ -12,7 +12,7 @@ resource "random_integer" "random_suffix" {
 resource "aws_iam_role" "eks-cluster-role" {
   count = var.is_eks_role_enabled ? 1 : 0
 
-  name  = "${local.cluster_name}-role-${random_integer.random_suffix.result}"
+  name = "${local.cluster_name}-role-${random_integer.random_suffix.result}"
   # Vuit in json encder terraform function to convert the policy to a JSON string.
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -27,27 +27,27 @@ resource "aws_iam_role" "eks-cluster-role" {
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
-  count      = var.is_eks_role_enabled ? 1 : 0
+  count = var.is_eks_role_enabled ? 1 : 0
 
-# This policy allows the EKS control plane to manage AWS resources on your behalf, such as:  
+  # This policy allows the EKS control plane to manage AWS resources on your behalf, such as:  
 
-# - **Auto Scaling**: Read/update configurations (for backward compatibility).  
-# - **EC2**: Manage network/volume resources and provision EBS for Kubernetes.  
-# - **ELB**: Provision load balancers and manage node targets.  
-# - **IAM**: Create service-linked roles for dynamic resource management.  
-# - **KMS**: Read keys for Kubernetes secrets encryption in etcd.  
+  # - **Auto Scaling**: Read/update configurations (for backward compatibility).  
+  # - **EC2**: Manage network/volume resources and provision EBS for Kubernetes.  
+  # - **ELB**: Provision load balancers and manage node targets.  
+  # - **IAM**: Create service-linked roles for dynamic resource management.  
+  # - **KMS**: Read keys for Kubernetes secrets encryption in etcd.  
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 
-# count.index is necessary to reference the specific element in the array created by the count argument.
-# Even if only one role is created, Terraform requires the use of count.index to access the role's attributes.
-  role       = aws_iam_role.eks-cluster-role[count.index].name
+  # count.index is necessary to reference the specific element in the array created by the count argument.
+  # Even if only one role is created, Terraform requires the use of count.index to access the role's attributes.
+  role = aws_iam_role.eks-cluster-role[count.index].name
 }
 
 # This role is used by the EKS worker node group to interact with AWS services by assuming the specified role.
 resource "aws_iam_role" "eks-nodegroup-role" {
   count = var.is_eks_nodegroup_role_enabled ? 1 : 0
-  name  = "${local.cluster_name}-nodegroup-role-${random_integer.random_suffix.result}"
+  name  = "nodegroup-role-${random_integer.random_suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -64,29 +64,29 @@ resource "aws_iam_role" "eks-nodegroup-role" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks-AmazonWorkerNodePolicy" {
-  count      = var.is_eks_nodegroup_role_enabled ? 1 : 0
+  count = var.is_eks_nodegroup_role_enabled ? 1 : 0
 
-#   Attach the **AmazonEKSWorkerNodePolicy** to your worker nodes. This policy allows nodes to interact with required AWS services for effective operation, such as:
+  #   Attach the **AmazonEKSWorkerNodePolicy** to your worker nodes. This policy allows nodes to interact with required AWS services for effective operation, such as:
 
-# - **ECR**: Pull container images required to run workloads on the nodes.  
-# - **S3**: Access cluster logs and state files for operations like Kubernetes bootstrap.  
-# - **EC2**: Retrieve instance metadata, manage instance tags, and interact with EC2 services.  
+  # - **ECR**: Pull container images required to run workloads on the nodes.  
+  # - **S3**: Access cluster logs and state files for operations like Kubernetes bootstrap.  
+  # - **EC2**: Retrieve instance metadata, manage instance tags, and interact with EC2 services.  
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks-nodegroup-role[count.index].name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-AmazonEKS_CNI_Policy" {
-  count      = var.is_eks_nodegroup_role_enabled ? 1 : 0
+  count = var.is_eks_nodegroup_role_enabled ? 1 : 0
 
-#   Attach the **AmazonEKS_CNI_Policy** to your worker nodes for Amazon VPC CNI plugin operations. It allows the CNI plugin to manage networking for EKS workloads, such as:
+  #   Attach the **AmazonEKS_CNI_Policy** to your worker nodes for Amazon VPC CNI plugin operations. It allows the CNI plugin to manage networking for EKS workloads, such as:
 
-# - **EC2**: Assign, attach, and manage ENIs and IP addresses for pods.  
-# - **EC2 Autoscaling**: Automatically scale and manage ENI capacity.  
-# - **CloudWatch Logs**: Publish logs related to CNI plugin operations.  
+  # - **EC2**: Assign, attach, and manage ENIs and IP addresses for pods.  
+  # - **EC2 Autoscaling**: Automatically scale and manage ENI capacity.  
+  # - **CloudWatch Logs**: Publish logs related to CNI plugin operations.  
 
-#   No, the control plane does not need the AmazonEKS_CNI_Policy because the control plane is managed by Amazon EKS and is not directly involved in managing networking for pods 
-#  in the same way worker nodes are.
+  #   No, the control plane does not need the AmazonEKS_CNI_Policy because the control plane is managed by Amazon EKS and is not directly involved in managing networking for pods 
+  #  in the same way worker nodes are.
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks-nodegroup-role[count.index].name
@@ -94,7 +94,7 @@ resource "aws_iam_role_policy_attachment" "eks-AmazonEKS_CNI_Policy" {
 
 
 resource "aws_iam_role_policy_attachment" "eks-AmazonEC2ContainerRegistryReadOnly" {
-  count      = var.is_eks_nodegroup_role_enabled ? 1 : 0
+  count = var.is_eks_nodegroup_role_enabled ? 1 : 0
 
   # Attach the **AmazonEC2ContainerRegistryReadOnly** policy to worker nodes.
   # This policy allows the worker nodes to pull container images from ECR, enabling:
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy_attachment" "eks-AmazonEC2ContainerRegistryReadOnl
 }
 
 resource "aws_iam_role_policy_attachment" "eks-AmazonEBSCSIDriverPolicy" {
-  count      = var.is_eks_nodegroup_role_enabled ? 1 : 0
+  count = var.is_eks_nodegroup_role_enabled ? 1 : 0
 
   # Attach the **AmazonEBSCSIDriverPolicy** policy to worker nodes.
   # This policy allows the nodes to use the Amazon EBS CSI driver for managing EBS volumes, enabling:
