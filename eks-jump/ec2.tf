@@ -2,7 +2,7 @@ resource "aws_instance" "ec2_eks_jump" {
   ami                    = data.aws_ami.ami.image_id
   instance_type          = "t2.medium"
   key_name               = var.key-name
-  subnet_id              = data.aws_subnet.public_subnet[0].id
+  subnet_id              = element(keys(data.aws_subnet.public_subnet), 0)
   vpc_security_group_ids = [aws_security_group.eks_jump_sg.id]
   iam_instance_profile   = data.aws_iam_instance_profile.admin_access.name
   user_data              = templatefile("./jump-tools-install.sh", {})

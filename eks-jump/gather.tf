@@ -20,14 +20,21 @@ data "aws_iam_instance_profile" "admin_access" {
   name = var.eks-jump-instance-profile
 }
 
-data "aws_subnet_ids" "public" {
-  vpc_id = var.vpc_id
-  tags = {
-    "kubernetes.io/role/elb" = "1"
+# Use the VPC ID in other resources
+data "aws_subnets" "public" {
+  filter {
+    name   = "tag:kubernetes.io/role/elb"
+    values = ["1"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.eks-project-2-vpc.id]
   }
 }
 
 data "aws_subnet" "public_subnet" {
-  for_each = toset(data.aws_subnet_ids.public.ids)
+  for_each = toset(data.aws_subnets.public.ids)
   id       = each.value
 }
+
